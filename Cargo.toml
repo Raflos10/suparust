@@ -10,6 +10,7 @@ serde = { version = "1.0.210", features = ["derive"] }
 thiserror = "1.0.64"
 tokio = "1.40.0"
 serde_json = "1.0.128"
+postgrest = "1.6.0"
 
 [target.'cfg(wasm)'.dependencies]
 web-time = "1.1.0"

@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use tokio::sync::Mutex;
+use tokio::sync::{Mutex, RwLock};
 
 pub type Result<Type> = std::result::Result<Type, SupabaseError>;
 
@@ -9,6 +9,7 @@ pub struct Supabase {
     url: String,
     api_key: String,
     auth_state: Arc<Mutex<Option<SupabaseAuthState>>>,
+    postgrest: Arc<RwLock<postgrest::Postgrest>>,
 }
 
 pub type RefreshToken = String;
@@ -42,16 +43,48 @@ impl Supabase {
             refresh_token,
         });
 
+        let postgrest = Arc::new(RwLock::new(
+            postgrest::Postgrest::new(url.clone()).insert_header("apikey", api_key.clone()),
+        ));
+
         Self {
             client: reqwest::Client::new(),
             url,
             api_key,
             auth_state: Arc::new(Mutex::new(auth_state)),
+            postgrest,
         }
+    }
+
+    pub async fn from<T>(&self, table: T) -> Result<postgrest::Builder>
+    where
+        T: AsRef<str>,
+    {
+        self.refresh_login().await?;
+
+        Ok(self.postgrest.read().await.from(table))
+    }
+
+    pub async fn rpc<T, U>(&self, function: T, params: U) -> Result<postgrest::Builder>
+    where
+        T: AsRef<str>,
+        U: Into<String>,
+    {
+        self.refresh_login().await?;
+
+        Ok(self.postgrest.read().await.rpc(function, params))
     }
 
     async fn set_auth_state(&self, auth_state: SupabaseAuthState) {
         *self.auth_state.lock().await = Some(auth_state.clone());
+        if let Some(auth_token) = auth_state.auth_token {
+            let mut postgrest = self.postgrest.write().await;
+            let authorized_postgrest = postgrest.clone().insert_header(
+                "Authorization",
+                format!("Bearer {}", auth_token.access_token),
+            );
+            *postgrest = authorized_postgrest;
+        }
     }
 
     pub async fn has_valid_auth_state(&self) -> bool {
