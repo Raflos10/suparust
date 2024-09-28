@@ -1,5 +1,9 @@
+mod postgrest;
+
 use std::sync::Arc;
 use tokio::sync::{Mutex, RwLock};
+
+extern crate postgrest as external_postgrest;
 
 pub type Result<Type> = std::result::Result<Type, SupabaseError>;
 
@@ -9,7 +13,7 @@ pub struct Supabase {
     url: String,
     api_key: String,
     auth_state: Arc<Mutex<Option<SupabaseAuthState>>>,
-    postgrest: Arc<RwLock<postgrest::Postgrest>>,
+    postgrest: Arc<RwLock<external_postgrest::Postgrest>>,
 }
 
 pub type RefreshToken = String;
@@ -44,7 +48,8 @@ impl Supabase {
         });
 
         let postgrest = Arc::new(RwLock::new(
-            postgrest::Postgrest::new(url.clone()).insert_header("apikey", api_key.clone()),
+            external_postgrest::Postgrest::new(url.clone())
+                .insert_header("apikey", api_key.clone()),
         ));
 
         Self {
@@ -54,25 +59,6 @@ impl Supabase {
             auth_state: Arc::new(Mutex::new(auth_state)),
             postgrest,
         }
-    }
-
-    pub async fn from<T>(&self, table: T) -> Result<postgrest::Builder>
-    where
-        T: AsRef<str>,
-    {
-        self.refresh_login().await?;
-
-        Ok(self.postgrest.read().await.from(table))
-    }
-
-    pub async fn rpc<T, U>(&self, function: T, params: U) -> Result<postgrest::Builder>
-    where
-        T: AsRef<str>,
-        U: Into<String>,
-    {
-        self.refresh_login().await?;
-
-        Ok(self.postgrest.read().await.rpc(function, params))
     }
 
     async fn set_auth_state(&self, auth_state: SupabaseAuthState) {
