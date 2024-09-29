@@ -1,4 +1,6 @@
 mod postgrest;
+#[cfg(test)]
+mod tests;
 
 use std::sync::Arc;
 use tokio::sync::{Mutex, RwLock};
@@ -41,21 +43,20 @@ pub enum SupabaseError {
 }
 
 impl Supabase {
-    pub fn new(url: String, api_key: String, refresh_token: Option<RefreshToken>) -> Self {
+    pub fn new(url: &str, api_key: &str, refresh_token: Option<RefreshToken>) -> Self {
         let auth_state = refresh_token.map(|refresh_token| SupabaseAuthState {
             auth_token: None,
             refresh_token,
         });
 
         let postgrest = Arc::new(RwLock::new(
-            external_postgrest::Postgrest::new(url.clone())
-                .insert_header("apikey", api_key.clone()),
+            external_postgrest::Postgrest::new(url).insert_header("apikey", api_key),
         ));
 
         Self {
             client: reqwest::Client::new(),
-            url,
-            api_key,
+            url: url.to_string(),
+            api_key: api_key.to_string(),
             auth_state: Arc::new(Mutex::new(auth_state)),
             postgrest,
         }
@@ -77,7 +78,7 @@ impl Supabase {
         self.auth_state.lock().await.is_some()
     }
 
-    pub async fn authorize(&self, email: String, password: String) -> Result<RefreshToken> {
+    pub async fn authorize(&self, email: &str, password: &str) -> Result<RefreshToken> {
         let body = serde_json::json!({
             "email": email,
             "password": password,
