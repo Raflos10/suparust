@@ -40,6 +40,8 @@ pub enum SupabaseError {
     MissingAuthenticationInformation,
     #[error("Request failed")]
     Reqwest(#[from] reqwest::Error),
+    #[error("Internal error: {0}")]
+    Internal(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
 impl Supabase {
@@ -119,7 +121,7 @@ impl Supabase {
         let auth_state = self.auth_state.lock().await.clone();
 
         if let Some(auth_state) = auth_state {
-            let now_epoch = now_as_epoch();
+            let now_epoch = now_as_epoch()?;
 
             let expired = {
                 if let Some(auth_token) = &auth_state.auth_token {
@@ -183,12 +185,12 @@ impl Supabase {
 }
 
 #[cfg(target_family = "wasm")]
-fn now_as_epoch() -> i64 {
-    web_time::SystemTime::now()
+fn now_as_epoch() -> std::result::Result<i64, Box<dyn std::error::Error + Send + Sync>> {
+    Ok(web_time::SystemTime::now()
         .duration_since(web_time::UNIX_EPOCH)?
-        .as_secs() as i64
+        .as_secs() as i64)
 }
 #[cfg(not(target_family = "wasm"))]
-fn now_as_epoch() -> i64 {
-    chrono::Utc::now().timestamp()
+fn now_as_epoch() -> std::result::Result<i64, SupabaseError> {
+    Ok(chrono::Utc::now().timestamp())
 }
