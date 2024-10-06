@@ -1,5 +1,5 @@
 [package]
-name = "supabase-client"
+name = "suparust"
 authors = ["Anders B. Eie"]
 version = "0.1.0"
 edition = "2021"
