@@ -9,13 +9,23 @@ async fn test_supabase() {
 
     let dummy_apikey = "dummy_apikey";
 
-    let client = crate::Supabase::new(&server.url_str(""), dummy_apikey, None);
+    let client = crate::Supabase::new(
+        &server.url_str(""),
+        dummy_apikey,
+        None,
+        crate::SessionChangeListener::Ignore,
+    );
 
     let dummy_username = "dummy_username";
     let dummy_password = "dummy_password";
     let dummy_refresh_token = "dummy_refresh_token";
     let dummy_access_token = "dummy_access_token";
     let dummy_expiration = chrono::Utc::now().timestamp() + 3600; // One hour ahead
+    let dummy_session = crate::Session {
+        access_token: dummy_access_token.to_string(),
+        expires_at: dummy_expiration,
+        refresh_token: dummy_refresh_token.to_string(),
+    };
 
     server.expect(
         Expectation::matching(all_of!(
@@ -35,12 +45,12 @@ async fn test_supabase() {
         }))),
     );
 
-    let received_refresh_token = client
+    let received_session = client
         .authorize(dummy_username, dummy_password)
         .await
         .unwrap();
 
-    assert_eq!(received_refresh_token, dummy_refresh_token);
+    assert_eq!(received_session, dummy_session);
     server.verify_and_clear();
 
     let dummy_table = "table";
@@ -59,7 +69,7 @@ async fn test_supabase() {
     server.expect(
         Expectation::matching(all_of!(
             request::method("GET"),
-            request::path("//table"),
+            request::path("//rest/v1/table"),
             request::query(url_decoded(contains(("select", "*")))),
             request::headers(contains(("apikey", dummy_apikey))),
             request::headers(contains((

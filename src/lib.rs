@@ -14,22 +14,9 @@ pub struct Supabase {
     client: reqwest::Client,
     url: String,
     api_key: String,
-    auth_state: Arc<Mutex<Option<SupabaseAuthState>>>,
+    session: Arc<Mutex<Option<Session>>>,
+    session_listener: SessionChangeListener,
     postgrest: Arc<RwLock<external_postgrest::Postgrest>>,
-}
-
-pub type RefreshToken = String;
-
-#[derive(Clone, serde::Deserialize)]
-struct AuthToken {
-    access_token: String,
-    expires_at: i64,
-}
-
-#[derive(Clone, serde::Deserialize)]
-struct SupabaseAuthState {
-    auth_token: Option<AuthToken>,
-    refresh_token: RefreshToken,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -44,43 +31,73 @@ pub enum SupabaseError {
     Internal(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
-impl Supabase {
-    pub fn new(url: &str, api_key: &str, refresh_token: Option<RefreshToken>) -> Self {
-        let auth_state = refresh_token.map(|refresh_token| SupabaseAuthState {
-            auth_token: None,
-            refresh_token,
-        });
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
+pub struct Session {
+    pub access_token: String,
+    pub expires_at: i64,
+    pub refresh_token: String,
+}
 
-        let postgrest = Arc::new(RwLock::new(
-            external_postgrest::Postgrest::new(url).insert_header("apikey", api_key),
-        ));
+#[derive(Clone)]
+pub enum SessionChangeListener {
+    Ignore,
+    Sync(std::sync::mpsc::Sender<Session>),
+    Async(tokio::sync::mpsc::Sender<Session>),
+}
+
+impl Supabase {
+    pub fn new(
+        url: &str,
+        api_key: &str,
+        session: Option<Session>,
+        session_listener: SessionChangeListener,
+    ) -> Self {
+        let mut postgrest = external_postgrest::Postgrest::new(format!("{url}/rest/v1"))
+            .insert_header("apikey", api_key);
+
+        if let Some(session) = &session {
+            postgrest = postgrest
+                .insert_header("Authorization", format!("Bearer {}", session.access_token));
+        }
 
         Self {
             client: reqwest::Client::new(),
             url: url.to_string(),
             api_key: api_key.to_string(),
-            auth_state: Arc::new(Mutex::new(auth_state)),
-            postgrest,
+            session: Arc::new(Mutex::new(session)),
+            session_listener,
+            postgrest: Arc::new(RwLock::new(postgrest)),
         }
     }
 
-    async fn set_auth_state(&self, auth_state: SupabaseAuthState) {
-        *self.auth_state.lock().await = Some(auth_state.clone());
-        if let Some(auth_token) = auth_state.auth_token {
-            let mut postgrest = self.postgrest.write().await;
-            let authorized_postgrest = postgrest.clone().insert_header(
-                "Authorization",
-                format!("Bearer {}", auth_token.access_token),
-            );
-            *postgrest = authorized_postgrest;
+    async fn set_auth_state(&self, session: Session) {
+        *self.session.lock().await = Some(session.clone());
+        let mut postgrest = self.postgrest.write().await;
+        let authorized_postgrest = postgrest
+            .clone()
+            .insert_header("Authorization", format!("Bearer {}", session.access_token));
+        *postgrest = authorized_postgrest;
+
+        match &self.session_listener {
+            SessionChangeListener::Ignore => {}
+            SessionChangeListener::Sync(sender) => {
+                if sender.send(session).is_err() {
+                    log::warn!("Failed to send session to listener");
+                }
+            }
+            SessionChangeListener::Async(sender) => {
+                if sender.send(session).await.is_err() {
+                    log::warn!("Failed to send session to listener");
+                }
+            }
         }
     }
 
     pub async fn has_valid_auth_state(&self) -> bool {
-        self.auth_state.lock().await.is_some()
+        self.session.lock().await.is_some()
     }
 
-    pub async fn authorize(&self, email: &str, password: &str) -> Result<RefreshToken> {
+    pub async fn authorize(&self, email: &str, password: &str) -> Result<Session> {
         let body = serde_json::json!({
             "email": email,
             "password": password,
@@ -96,41 +113,21 @@ impl Supabase {
             .await?
             .error_for_status()?;
 
-        #[derive(serde::Deserialize)]
-        struct SupabaseAuthResponse {
-            pub access_token: String,
-            pub expires_at: i64,
-            pub refresh_token: String,
-        }
+        let session = response.json::<Session>().await?;
 
-        let token = response.json::<SupabaseAuthResponse>().await?;
+        self.set_auth_state(session.clone()).await;
 
-        let auth_state = SupabaseAuthState {
-            auth_token: Some(AuthToken {
-                access_token: token.access_token,
-                expires_at: token.expires_at,
-            }),
-            refresh_token: token.refresh_token.clone(),
-        };
-        self.set_auth_state(auth_state).await;
-
-        Ok(token.refresh_token)
+        Ok(session)
     }
 
     async fn refresh_login(&self) -> Result<()> {
-        let auth_state = self.auth_state.lock().await.clone();
+        let auth_state = self.session.lock().await.clone();
 
         if let Some(auth_state) = auth_state {
             let now_epoch = now_as_epoch()?;
 
-            let expired = {
-                if let Some(auth_token) = &auth_state.auth_token {
-                    // Refresh 1 minute before expiration
-                    auth_token.expires_at < now_epoch + 60
-                } else {
-                    true
-                }
-            };
+            // Refresh 1 minute before expiration
+            let expired = auth_state.expires_at < now_epoch + 60;
 
             if expired {
                 match self
@@ -153,7 +150,7 @@ impl Supabase {
                     Err(error) => {
                         if let Some(status) = error.status() {
                             if status == reqwest::StatusCode::BAD_REQUEST {
-                                self.auth_state.lock().await.take();
+                                self.session.lock().await.take();
                                 return Err(SupabaseError::SessionRefresh(error));
                             }
                         }
@@ -178,7 +175,7 @@ impl Supabase {
             .await?
             .error_for_status()?;
 
-        self.auth_state.lock().await.take();
+        self.session.lock().await.take();
 
         Ok(())
     }
