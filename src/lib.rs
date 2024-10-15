@@ -1,3 +1,36 @@
+//! # Examples
+//!
+//! Simple example:
+//! ```
+//! # pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+//! let client = suparust::Supabase::new(
+//!     "https://your.postgrest.endpoint",
+//!     "your_api_key",
+//!     None,
+//!     suparust::SessionChangeListener::Ignore);
+//!
+//! client.login_with_email(
+//!     "myemail@example.com",
+//!     "mypassword").await?;
+//!
+//! #[derive(serde::Deserialize)]
+//! struct MyStruct {
+//!     id: i64,
+//!     field: String
+//! }
+//!
+//! // Postgrest example (see postgrest crate for more details on API)
+//! let table_contents = client
+//!     .from("your_table")
+//!     .await?
+//!     .select("*")
+//!     .execute()
+//!     .await?
+//!     .json::<Vec<MyStruct>>();
+//!
+//! # Ok(())
+//! # }
+
 mod auth;
 mod postgrest;
 #[cfg(test)]
