@@ -20,11 +20,14 @@ async fn test_supabase() {
     let dummy_password = "dummy_password";
     let dummy_refresh_token = "dummy_refresh_token";
     let dummy_access_token = "dummy_access_token";
-    let dummy_expiration = chrono::Utc::now().timestamp() + 3600; // One hour ahead
+    let dummy_expiration = (chrono::Utc::now().timestamp() + 3600) as u64; // One hour ahead
     let dummy_session = crate::Session {
         access_token: dummy_access_token.to_string(),
+        token_type: "".to_string(),
+        expires_in: 0,
         expires_at: dummy_expiration,
         refresh_token: dummy_refresh_token.to_string(),
+        user: Default::default(),
     };
 
     server.expect(
@@ -38,15 +41,11 @@ async fn test_supabase() {
                 "password": dummy_password,
             }))))
         ))
-        .respond_with(responders::json_encoded(serde_json::json!({
-            "access_token": dummy_access_token,
-            "expires_at": dummy_expiration,
-            "refresh_token": dummy_refresh_token,
-        }))),
+        .respond_with(responders::json_encoded(dummy_session.clone())),
     );
 
     let received_session = client
-        .authorize(dummy_username, dummy_password)
+        .login_with_email(dummy_username, dummy_password)
         .await
         .unwrap();
 

@@ -15,6 +15,9 @@ serde_json = "1.0.128"
 # TODO: Update to proper version when it's released
 postgrest = { git = "https://github.com/strykejern/postgrest-rs.git", branch = "serde", features = ["serde"] }
 log = "0.4.22"
+# Custom git revision to support compilation for wasm
+# TODO: Update to proper version when it's released
+supabase-auth = { git = "https://github.com/strykejern/supabase-auth-rs", branch = "derives" }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 web-time = "1.1.0"
