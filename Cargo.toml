@@ -4,6 +4,11 @@ authors = ["Anders B. Eie"]
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0 OR MIT"
+description = "Supabase client for Rust with support for WASM"
+repository = "https://github.com/strykejern/suparust"
+readme = "README.md"
+keywords = ["supabase", "client", "wasm"]
+categories = ["database", "wasm", "web-programming"]
 
 [dependencies]
 reqwest = { version = "0.12.7", features = ["json"] }
