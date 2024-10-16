@@ -29,14 +29,14 @@ The project supports both the `stable-x86_64-unknown-linux-gnu` and `wasm32-unkn
 
 ```rust
 let client = suparust::Supabase::new(
-"https://your.postgrest.endpoint",
-"your_api_key",
-None,
-suparust::SessionChangeListener::Ignore);
+    "https://your.postgrest.endpoint",
+    "your_api_key",
+    None,
+    suparust::SessionChangeListener::Ignore);
 
 client.login_with_email(
-"myemail@example.com",
-"mypassword").await?;
+    "myemail@example.com",
+    "mypassword").await?;
 
 #[derive(serde::Deserialize)]
 struct MyStruct {
@@ -46,12 +46,12 @@ struct MyStruct {
 
 // Postgrest example (see postgrest crate for more details on API)
 let table_contents = client
-.from("your_table")
-.await?
-.select("*")
-.execute()
-.await?
-.json::<Vec<MyStruct> > ();
+    .from("your_table")
+    .await?
+    .select("*")
+    .execute()
+    .await?
+    .json::<Vec<MyStruct> > ();
 ```
 
 More examples will come as the library matures.
