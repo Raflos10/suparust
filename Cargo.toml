@@ -19,6 +19,7 @@ serde_json = "1.0.128"
 postgrest = { version = "1.6.0" } #, features = ["serde"] }
 log = "0.4.22"
 supabase-auth = "0.9.1"
+mime = "0.3.17"
 
 [patch.crates-io]
 # Custom git revision to get support for json in reqwest and serde in postgrest

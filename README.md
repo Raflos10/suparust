@@ -14,6 +14,12 @@ The goal is to support as much of the Supabase API as possible. Currently, the f
     - [ ] ... more to come
 - [x] Postgrest
 - [ ] Storage
+    - [x] Delete object
+    - [x] Get object
+    - [x] Update object
+    - [x] Upload object
+    - [x] List objects
+    - [ ] ... more to come
 - [ ] GraphQL
 - [ ] ...
 

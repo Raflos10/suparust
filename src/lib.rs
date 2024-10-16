@@ -33,6 +33,7 @@
 
 mod auth;
 mod postgrest;
+pub mod storage;
 #[cfg(test)]
 mod tests;
 
@@ -50,6 +51,9 @@ pub struct Supabase {
     session: Arc<RwLock<Option<Session>>>,
     session_listener: SessionChangeListener,
     postgrest: Arc<RwLock<external_postgrest::Postgrest>>,
+    storage_client: reqwest::Client,
+    api_key: String,
+    url_base: String,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -95,6 +99,9 @@ impl Supabase {
             session: Arc::new(RwLock::new(session)),
             session_listener,
             postgrest: Arc::new(RwLock::new(postgrest)),
+            storage_client: Default::default(),
+            api_key: api_key.to_string(),
+            url_base: url.to_string(),
         }
     }
 }
