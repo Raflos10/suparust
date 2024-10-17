@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: "Cargo test"
-        run: cargo test --all
+        run: cargo test
 
   format:
     name: "Check rustfmt"
