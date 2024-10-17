@@ -32,6 +32,7 @@
 //! # }
 
 mod auth;
+mod external;
 mod postgrest;
 pub mod storage;
 #[cfg(test)]
@@ -41,8 +42,6 @@ use std::sync::Arc;
 pub use supabase_auth::models::{LogoutScope, Session, User};
 use tokio::sync::RwLock;
 
-extern crate postgrest as external_postgrest;
-
 pub type Result<Type> = std::result::Result<Type, SupabaseError>;
 
 #[derive(Clone)]
@@ -50,7 +49,7 @@ pub struct Supabase {
     auth: Arc<supabase_auth::models::AuthClient>,
     session: Arc<RwLock<Option<Session>>>,
     session_listener: SessionChangeListener,
-    postgrest: Arc<RwLock<external_postgrest::Postgrest>>,
+    postgrest: Arc<RwLock<external::postgrest_rs::Postgrest>>,
     storage_client: reqwest::Client,
     api_key: String,
     url_base: String,
@@ -84,7 +83,7 @@ impl Supabase {
         session: Option<Session>,
         session_listener: SessionChangeListener,
     ) -> Self {
-        let mut postgrest = external_postgrest::Postgrest::new(format!("{url}/rest/v1"))
+        let mut postgrest = external::postgrest_rs::Postgrest::new(format!("{url}/rest/v1"))
             .insert_header("apikey", api_key);
 
         if let Some(session) = &session {

@@ -1,6 +1,8 @@
 use crate::Result;
 use crate::Supabase;
 
+use crate::external::postgrest_rs as postgrest;
+
 impl Supabase {
     pub async fn from<T>(&self, table: T) -> Result<postgrest::Builder>
     where
