@@ -78,7 +78,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -108,7 +108,7 @@ impl Builder {
     ///
     /// Simple example:
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -124,7 +124,7 @@ impl Builder {
     ///
     /// Renaming columns:
     ///
-    /// ```
+    /// ```text
     /// # use postgrest::Postgrest;
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
     /// # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -139,7 +139,7 @@ impl Builder {
     ///
     /// Casting columns:
     ///
-    /// ```
+    /// ```text
     /// # use postgrest::Postgrest;
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
     /// # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -154,7 +154,7 @@ impl Builder {
     ///
     /// SELECTing JSON fields:
     ///
-    /// ```
+    /// ```text
     /// # use postgrest::Postgrest;
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
     /// # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -170,7 +170,7 @@ impl Builder {
     /// Embedded filters (assume there is a foreign key constraint between
     /// tables `users` and `tweets`):
     ///
-    /// ```
+    /// ```text
     /// # use postgrest::Postgrest;
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
     /// # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -194,7 +194,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -215,7 +215,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -284,7 +284,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -307,7 +307,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -330,7 +330,7 @@ impl Builder {
     /// # Example
     ///
     /// This retrieves the 2nd to 5th entries in the result:
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -366,7 +366,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -384,7 +384,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -402,7 +402,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -419,7 +419,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -440,7 +440,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// #[derive(serde::Serialize)]
@@ -477,7 +477,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// #[derive(serde::Serialize)]
@@ -518,7 +518,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -546,7 +546,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// #[derive(serde::Serialize)]
@@ -579,7 +579,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint");

@@ -35,7 +35,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -72,7 +72,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -105,7 +105,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -132,7 +132,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -160,7 +160,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -188,7 +188,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -216,7 +216,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -244,7 +244,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -272,7 +272,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -300,7 +300,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -336,7 +336,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -372,7 +372,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -400,7 +400,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -447,7 +447,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -475,7 +475,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -503,7 +503,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -530,7 +530,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -557,7 +557,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -584,7 +584,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -611,7 +611,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -638,7 +638,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -666,7 +666,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -699,7 +699,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -734,7 +734,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -769,7 +769,7 @@ impl Builder {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// # async fn run() -> Result<(), Box<dyn std::error::Error>> {

@@ -37,7 +37,7 @@
 //! ## Usage
 //!
 //! Simple example:
-//! ```
+//! ```text
 //! use postgrest::Postgrest;
 //!
 //! # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -55,7 +55,7 @@
 //! ```
 //!
 //! Using filters:
-//! ```
+//! ```text
 //! # use postgrest::Postgrest;
 //! # async fn run() -> Result<(), Box<dyn std::error::Error>> {
 //! # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -71,7 +71,7 @@
 //! ```
 //!
 //! Updating a table:
-//! ```
+//! ```text
 //! # use postgrest::Postgrest;
 //! # #[cfg(not(feature = "serde"))]
 //! # async fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -87,7 +87,7 @@
 //! ```
 //!
 //! Executing stored procedures:
-//! ```
+//! ```text
 //! # use postgrest::Postgrest;
 //! # async fn run() -> Result<(), Box<dyn std::error::Error>> {
 //! # let client = Postgrest::new("https://your.postgrest.endpoint");
@@ -124,7 +124,7 @@ impl Postgrest {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("http://your.postgrest.endpoint");
@@ -146,7 +146,7 @@ impl Postgrest {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("https://your.postgrest.endpoint")
@@ -169,7 +169,7 @@ impl Postgrest {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("http://your.postgrest.endpoint");
@@ -192,7 +192,7 @@ impl Postgrest {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```text
     /// use postgrest::Postgrest;
     ///
     /// let client = Postgrest::new("http://your.postgrest.endpoint");
