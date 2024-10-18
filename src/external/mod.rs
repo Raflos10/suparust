@@ -1,1 +1,1 @@
-pub(crate) mod postgrest_rs;
+pub mod postgrest_rs;

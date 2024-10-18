@@ -69,6 +69,8 @@ pub struct ObjectInformation {
     pub buckets: Option<BucketInformation>,
 }
 
+/// Basic builder pattern for creating a request for listing objects. See more information
+/// [here](https://supabase.github.io/storage/#/object/post_object_list__bucketName_)
 impl ListRequest {
     pub fn new(prefix: String) -> Self {
         Self {
@@ -104,6 +106,7 @@ impl ListRequest {
     }
 }
 impl Object {
+    /// Delete and object
     pub async fn delete_one(self, bucket_name: &str, wildcard: &str) -> crate::Result<String> {
         Ok(self
             .client
@@ -116,6 +119,7 @@ impl Object {
             .await?)
     }
 
+    /// Get object
     pub async fn get_one(self, bucket_name: &str, wildcard: &str) -> crate::Result<Vec<u8>> {
         Ok(self
             .client
@@ -129,6 +133,7 @@ impl Object {
             .to_vec())
     }
 
+    /// Update the object at an existing key
     pub async fn update_one(
         self,
         bucket_name: &str,
@@ -151,6 +156,7 @@ impl Object {
         Ok(request.send().await?.json().await?)
     }
 
+    /// Upload a new object
     pub async fn upload_one(
         self,
         bucket_name: &str,
@@ -173,6 +179,7 @@ impl Object {
         Ok(request.send().await?.json().await?)
     }
 
+    /// Search for objects under a prefix
     pub async fn list(
         self,
         bucket_name: &str,

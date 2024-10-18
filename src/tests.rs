@@ -13,7 +13,7 @@ async fn test_supabase() {
         &server.url_str(""),
         dummy_apikey,
         None,
-        crate::SessionChangeListener::Ignore,
+        crate::auth::SessionChangeListener::Ignore,
     );
 
     let dummy_username = "dummy_username";
@@ -21,7 +21,7 @@ async fn test_supabase() {
     let dummy_refresh_token = "dummy_refresh_token";
     let dummy_access_token = "dummy_access_token";
     let dummy_expiration = (chrono::Utc::now().timestamp() + 3600) as u64; // One hour ahead
-    let dummy_session = crate::Session {
+    let dummy_session = crate::auth::Session {
         access_token: dummy_access_token.to_string(),
         token_type: "".to_string(),
         expires_in: 0,

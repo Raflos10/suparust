@@ -3,6 +3,11 @@ pub mod object;
 use crate::Supabase;
 
 impl Supabase {
+    /// Gives you an authenticated [`Storage`] client meant for making one storage request. For multiple
+    /// requests, call this function each time.
+    ///
+    /// This interface is modeled after the definitions [here](https://supabase.github.io/storage/),
+    /// but is not yet complete.
     pub async fn storage(&self) -> Storage {
         let url_base = format!("{}/storage/v1", self.url_base);
         let access_token = self
@@ -35,6 +40,7 @@ pub struct Storage {
 }
 
 impl Storage {
+    /// Object end-points
     pub fn object(self) -> object::Object {
         object::Object {
             client: self.client,

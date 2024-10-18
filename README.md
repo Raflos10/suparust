@@ -26,12 +26,13 @@ The goal is to support as much of the Supabase API as possible. Currently, the f
 ## Platform compatibility
 
 The project supports both the `stable-x86_64-unknown-linux-gnu` and `wasm32-unknown-unknown` targets.
+More targets might also work, but WASM is actively targeted for this crate.
 
 ## Installation
 
 `cargo add suparust`
 
-## Usage
+## Usage examples
 
 ```rust
 let client = suparust::Supabase::new(
@@ -58,6 +59,35 @@ let table_contents = client
     .execute()
     .await?
     .json::<Vec<MyStruct> > ();
+
+// Storage example
+
+use suparust::storage::object::*;
+let list_request = ListRequest::new("my_folder".to_string())
+    .limit(10)
+    .sort_by("my_column", SortOrder::Ascending);
+let objects = client
+    .storage()
+    .await
+    .object()
+    .list("my_bucket", list_request)
+    .await?;
+
+let object_names = objects
+    .iter()
+    .map(|object| object.name.clone());
+
+let mut downloaded_objects = vec![];
+
+for object in objects {
+    let downloaded = client
+        .storage()
+        .await
+        .object()
+        .get_one("my_bucket", &object.name)
+        .await?;
+    downloaded_objects.push(downloaded);
+}
 ```
 
 More examples will come as the library matures.
