@@ -39,6 +39,21 @@ pub struct Storage {
     url_base: String,
 }
 
+/// errorSchema as defined under schemas at [the api documentation](https://supabase.github.io/storage/)
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, thiserror::Error)]
+pub struct Error {
+    #[serde(rename = "statusCode")]
+    pub status_code: String,
+    pub error: String,
+    pub message: String,
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
+}
+
 impl Storage {
     /// Object end-points
     pub fn object(self) -> object::Object {
@@ -60,5 +75,40 @@ impl AuthenticateClient for reqwest::RequestBuilder {
             None => self,
         }
         .header("apikey", authenticator.apikey.clone())
+    }
+}
+
+trait DecodeStorageErrorResponse {
+    async fn decode_storage_error_response(self) -> crate::Result<reqwest::Response>;
+}
+
+impl DecodeStorageErrorResponse for reqwest::Response {
+    async fn decode_storage_error_response(self) -> crate::Result<reqwest::Response> {
+        let status = self.status();
+        if status.is_client_error() || status.is_server_error() {
+            let error = self.json::<Error>().await?;
+            Err(error.into())
+        } else {
+            Ok(self)
+        }
+    }
+}
+
+trait SendAndDecodeStorageRequest<Type> {
+    async fn send_and_decode_storage_request(self) -> crate::Result<Type>;
+}
+
+impl<Type> SendAndDecodeStorageRequest<Type> for reqwest::RequestBuilder
+where
+    Type: serde::de::DeserializeOwned,
+{
+    async fn send_and_decode_storage_request(self) -> crate::Result<Type> {
+        Ok(self
+            .send()
+            .await?
+            .decode_storage_error_response()
+            .await?
+            .json()
+            .await?)
     }
 }

@@ -142,6 +142,8 @@ pub enum SupabaseError {
     /// Missing authentication information. Maybe you are not logged in?
     #[error("Missing authentication information. Maybe you are not logged in?")]
     MissingAuthenticationInformation,
+    #[error("Error from storage: {0}")]
+    Storage(#[from] storage::Error),
     #[error("Request failed")]
     Reqwest(#[from] reqwest::Error),
     #[error("Error from auth layer: {0}")]

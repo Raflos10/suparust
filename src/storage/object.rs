@@ -1,4 +1,4 @@
-use crate::storage::AuthenticateClient;
+use crate::storage::{AuthenticateClient, DecodeStorageErrorResponse, SendAndDecodeStorageRequest};
 
 pub struct Object {
     pub(super) client: crate::storage::AuthenticatedClient,
@@ -69,6 +69,11 @@ pub struct ObjectInformation {
     pub buckets: Option<BucketInformation>,
 }
 
+#[derive(Debug, Clone, serde::Deserialize)]
+pub struct SimpleMessage {
+    pub message: String,
+}
+
 /// Basic builder pattern for creating a request for listing objects. See more information
 /// [here](https://supabase.github.io/storage/#/object/post_object_list__bucketName_)
 impl ListRequest {
@@ -107,16 +112,17 @@ impl ListRequest {
 }
 impl Object {
     /// Delete and object
-    pub async fn delete_one(self, bucket_name: &str, wildcard: &str) -> crate::Result<String> {
-        Ok(self
-            .client
+    pub async fn delete_one(
+        self,
+        bucket_name: &str,
+        wildcard: &str,
+    ) -> crate::Result<SimpleMessage> {
+        self.client
             .client
             .delete(format!("{}/{bucket_name}/{wildcard}", self.url_base))
             .authenticate(&self.client)
-            .send()
-            .await?
-            .json()
-            .await?)
+            .send_and_decode_storage_request()
+            .await
     }
 
     /// Get object
@@ -127,6 +133,8 @@ impl Object {
             .get(format!("{}/{bucket_name}/{wildcard}", self.url_base))
             .authenticate(&self.client)
             .send()
+            .await?
+            .decode_storage_error_response()
             .await?
             .bytes()
             .await?
@@ -153,7 +161,7 @@ impl Object {
             None => request,
         };
 
-        Ok(request.send().await?.json().await?)
+        request.send_and_decode_storage_request().await
     }
 
     /// Upload a new object
@@ -176,7 +184,7 @@ impl Object {
             None => request,
         };
 
-        Ok(request.send().await?.json().await?)
+        request.send_and_decode_storage_request().await
     }
 
     /// Search for objects under a prefix
@@ -185,15 +193,12 @@ impl Object {
         bucket_name: &str,
         request: ListRequest,
     ) -> crate::Result<Vec<ObjectInformation>> {
-        Ok(self
-            .client
+        self.client
             .client
             .post(format!("{}/list/{bucket_name}", self.url_base))
             .authenticate(&self.client)
             .json(&request)
-            .send()
-            .await?
-            .json()
-            .await?)
+            .send_and_decode_storage_request()
+            .await
     }
 }
