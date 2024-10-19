@@ -144,6 +144,8 @@ pub enum SupabaseError {
     MissingAuthenticationInformation,
     #[error("Error from storage: {0}")]
     Storage(#[from] storage::Error),
+    #[error("Unable to guess MIME type")]
+    UnknownMimeType,
     #[error("Request failed")]
     Reqwest(#[from] reqwest::Error),
     #[error("Error from auth layer: {0}")]

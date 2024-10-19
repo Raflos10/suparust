@@ -149,17 +149,17 @@ impl Object {
         data: Vec<u8>,
         content_type: Option<mime::Mime>,
     ) -> crate::Result<ObjectIdentifier> {
+        let mime_type = content_type
+            .or_else(|| mime_guess::from_path(wildcard).first())
+            .ok_or(crate::SupabaseError::UnknownMimeType)?;
+
         let request = self
             .client
             .client
             .put(format!("{}/{bucket_name}/{wildcard}", self.url_base))
             .authenticate(&self.client)
-            .body(data);
-
-        let request = match content_type {
-            Some(content_type) => request.header("Content-Type", content_type.to_string()),
-            None => request,
-        };
+            .body(data)
+            .header("Content-Type", mime_type.to_string());
 
         request.send_and_decode_storage_request().await
     }
@@ -172,17 +172,17 @@ impl Object {
         data: Vec<u8>,
         content_type: Option<mime::Mime>,
     ) -> crate::Result<ObjectIdentifier> {
+        let mime_type = content_type
+            .or_else(|| mime_guess::from_path(wildcard).first())
+            .ok_or(crate::SupabaseError::UnknownMimeType)?;
+
         let request = self
             .client
             .client
             .post(format!("{}/{bucket_name}/{wildcard}", self.url_base))
             .authenticate(&self.client)
-            .body(data);
-
-        let request = match content_type {
-            Some(content_type) => request.header("Content-Type", content_type.to_string()),
-            None => request,
-        };
+            .body(data)
+            .header("Content-Type", mime_type.to_string());
 
         request.send_and_decode_storage_request().await
     }
