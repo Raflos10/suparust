@@ -85,7 +85,7 @@
 //!     .sort_by("my_column", SortOrder::Ascending);
 //! let objects = client
 //!     .storage()
-//!     .await
+//!     .await?
 //!     .object()
 //!     .list("my_bucket", list_request)
 //!     .await?;
@@ -99,7 +99,7 @@
 //! for object in objects {
 //!     let downloaded = client
 //!         .storage()
-//!         .await
+//!         .await?
 //!         .object()
 //!         .get_one("my_bucket", &object.name)
 //!         .await?;

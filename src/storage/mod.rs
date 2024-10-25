@@ -8,8 +8,11 @@ impl Supabase {
     ///
     /// This interface is modeled after the definitions [here](https://supabase.github.io/storage/),
     /// but is not yet complete.
-    pub async fn storage(&self) -> Storage {
+    pub async fn storage(&self) -> crate::Result<Storage> {
         let url_base = format!("{}/storage/v1", self.url_base);
+
+        self.refresh_login().await?;
+
         let access_token = self
             .session
             .read()
@@ -17,14 +20,14 @@ impl Supabase {
             .as_ref()
             .map(|session| session.access_token.clone());
 
-        Storage {
+        Ok(Storage {
             client: AuthenticatedClient {
                 client: self.storage_client.clone(),
                 access_token,
                 apikey: self.api_key.clone(),
             },
             url_base,
-        }
+        })
     }
 }
 

@@ -68,7 +68,7 @@ let list_request = ListRequest::new("my_folder".to_string())
     .sort_by("my_column", SortOrder::Ascending);
 let objects = client
     .storage()
-    .await
+    .await?
     .object()
     .list("my_bucket", list_request)
     .await?;
@@ -82,7 +82,7 @@ let mut downloaded_objects = vec![];
 for object in objects {
     let downloaded = client
         .storage()
-        .await
+        .await?
         .object()
         .get_one("my_bucket", &object.name)
         .await?;
