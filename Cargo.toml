@@ -17,14 +17,9 @@ thiserror = "1.0.64"
 tokio = { version = "1.40.0", features = ["sync"] }
 serde_json = "1.0.128"
 log = "0.4.22"
-supabase-auth = "0.9.1"
+supabase-auth = "0.9.2"
 mime = "0.3.17"
 mime_guess = "2.0.5"
-
-[patch.crates-io]
-# Custom git revision to get support for PartialEq on structs in supabase-auth
-# TODO: Update to proper version when it's released
-supabase-auth = { git = "https://github.com/strykejern/supabase-auth-rs", branch = "derives" }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 web-time = "1.1.0"

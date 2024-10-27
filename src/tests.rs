@@ -3,6 +3,8 @@ use httptest::{all_of, responders, Expectation};
 
 fn new_dummy_session(prefix: &str, expiration: std::time::SystemTime) -> crate::auth::Session {
     crate::auth::Session {
+        provider_token: None,
+        provider_refresh_token: None,
         access_token: format!("{prefix}_access_token"),
         token_type: "bearer".to_string(),
         expires_in: expiration
