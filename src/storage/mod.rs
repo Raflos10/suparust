@@ -55,6 +55,7 @@ pub struct Storage {
     Hash,
     Default,
     serde::Deserialize,
+    serde::Serialize,
     thiserror::Error,
 )]
 pub struct Error {

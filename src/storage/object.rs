@@ -5,7 +5,18 @@ pub struct Object {
     pub(super) url_base: String,
 }
 
-#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Default,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 pub struct ObjectIdentifier {
     #[serde(rename = "Id")]
     pub id: String,
@@ -13,7 +24,9 @@ pub struct ObjectIdentifier {
     pub key: String,
 }
 
-#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, serde::Serialize)]
+#[derive(
+    Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, serde::Deserialize, serde::Serialize,
+)]
 pub enum SortOrder {
     #[serde(rename = "asc")]
     Ascending,
@@ -27,13 +40,35 @@ impl Default for SortOrder {
     }
 }
 
-#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Default,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 pub struct SortBy {
     pub column: String,
     pub order: SortOrder,
 }
 
-#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Serialize)]
+#[derive(
+    Debug,
+    Clone,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Default,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 pub struct ListRequest {
     pub prefix: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -47,7 +82,7 @@ pub struct ListRequest {
     pub search: Option<String>,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize, serde::Serialize)]
 pub struct BucketInformation {
     pub id: String,
     pub name: String,
@@ -59,7 +94,7 @@ pub struct BucketInformation {
     pub updated_at: Option<String>,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize, serde::Serialize)]
 pub struct ObjectInformation {
     pub name: String,
     pub bucket_id: Option<String>,
@@ -75,14 +110,25 @@ pub struct ObjectInformation {
     pub buckets: Option<BucketInformation>,
 }
 
-#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Default,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 pub struct SimpleMessage {
     pub message: String,
 }
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct DownloadedObject {
-    pub mime: mime::Mime,
+    pub mime: mime::Mime, // TODO: Derive serde when/if mime releases support for it
     pub data: Vec<u8>,
 }
 
