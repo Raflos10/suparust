@@ -74,6 +74,12 @@ pub struct SimpleMessage {
     pub message: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct DownloadedObject {
+    pub mime: mime::Mime,
+    pub data: Vec<u8>,
+}
+
 /// Basic builder pattern for creating a request for listing objects. See more information
 /// [here](https://supabase.github.io/storage/#/object/post_object_list__bucketName_)
 impl ListRequest {
@@ -126,8 +132,12 @@ impl Object {
     }
 
     /// Get object
-    pub async fn get_one(self, bucket_name: &str, wildcard: &str) -> crate::Result<Vec<u8>> {
-        Ok(self
+    pub async fn get_one(
+        self,
+        bucket_name: &str,
+        wildcard: &str,
+    ) -> crate::Result<DownloadedObject> {
+        let response = self
             .client
             .client
             .get(format!("{}/{bucket_name}/{wildcard}", self.url_base))
@@ -135,10 +145,19 @@ impl Object {
             .send()
             .await?
             .decode_storage_error_response()
-            .await?
-            .bytes()
-            .await?
-            .to_vec())
+            .await?;
+
+        use std::str::FromStr;
+        let mime = response
+            .headers()
+            .get("Content-Type")
+            .and_then(|header| header.to_str().ok())
+            .and_then(|header| mime::Mime::from_str(header).ok())
+            .unwrap_or(mime::APPLICATION_OCTET_STREAM);
+
+        let data = response.bytes().await?.to_vec();
+
+        Ok(DownloadedObject { mime, data })
     }
 
     /// Update the object at an existing key
