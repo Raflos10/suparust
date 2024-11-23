@@ -11,7 +11,7 @@ keywords = ["supabase", "client", "wasm"]
 categories = ["database", "wasm", "web-programming"]
 
 [dependencies]
-reqwest = { version = "0.12.7", features = ["json"] }
+reqwest = { version = "0.12.7", default-features = false, features = ["json"] }
 serde = { version = "1.0.210", features = ["derive"] }
 thiserror = "1.0.64"
 tokio = { version = "1.40.0", features = ["sync"] }
@@ -32,3 +32,8 @@ httptest = "0.16.1"
 env_logger = "0.11.5"
 chrono = "0.4.38"
 test-case = "3.3.1"
+
+[features]
+default = ["rustls"]
+native-tls = ["reqwest/native-tls"]
+rustls = ["reqwest/rustls-tls"]
