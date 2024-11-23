@@ -5,7 +5,7 @@ pub struct Object {
     pub(super) url_base: String,
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Deserialize)]
 pub struct ObjectIdentifier {
     #[serde(rename = "Id")]
     pub id: String,
@@ -13,7 +13,7 @@ pub struct ObjectIdentifier {
     pub key: String,
 }
 
-#[derive(Debug, Clone, serde::Serialize)]
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, serde::Serialize)]
 pub enum SortOrder {
     #[serde(rename = "asc")]
     Ascending,
@@ -21,13 +21,19 @@ pub enum SortOrder {
     Descending,
 }
 
-#[derive(Debug, Clone, serde::Serialize)]
+impl Default for SortOrder {
+    fn default() -> Self {
+        Self::Descending
+    }
+}
+
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Serialize)]
 pub struct SortBy {
     pub column: String,
     pub order: SortOrder,
 }
 
-#[derive(Debug, Clone, serde::Serialize)]
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Serialize)]
 pub struct ListRequest {
     pub prefix: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,7 +47,7 @@ pub struct ListRequest {
     pub search: Option<String>,
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize)]
 pub struct BucketInformation {
     pub id: String,
     pub name: String,
@@ -53,7 +59,7 @@ pub struct BucketInformation {
     pub updated_at: Option<String>,
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, serde::Deserialize)]
 pub struct ObjectInformation {
     pub name: String,
     pub bucket_id: Option<String>,
@@ -69,12 +75,12 @@ pub struct ObjectInformation {
     pub buckets: Option<BucketInformation>,
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Default, serde::Deserialize)]
 pub struct SimpleMessage {
     pub message: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct DownloadedObject {
     pub mime: mime::Mime,
     pub data: Vec<u8>,

@@ -31,19 +31,32 @@ impl Supabase {
     }
 }
 
+#[derive(Debug)]
 struct AuthenticatedClient {
     client: reqwest::Client,
     access_token: Option<String>,
     apikey: String,
 }
 
+#[derive(Debug)]
 pub struct Storage {
     client: AuthenticatedClient,
     url_base: String,
 }
 
 /// errorSchema as defined under schemas at [the api documentation](https://supabase.github.io/storage/)
-#[derive(Debug, Clone, PartialEq, serde::Deserialize, thiserror::Error)]
+#[derive(
+    Debug,
+    Clone,
+    Ord,
+    PartialOrd,
+    Eq,
+    PartialEq,
+    Hash,
+    Default,
+    serde::Deserialize,
+    thiserror::Error,
+)]
 pub struct Error {
     #[serde(rename = "statusCode")]
     pub status_code: String,

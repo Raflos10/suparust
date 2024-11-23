@@ -5,6 +5,7 @@ use tokio::sync::RwLock;
 
 pub const SESSION_REFRESH_GRACE_PERIOD_SECONDS: i64 = 60;
 
+#[derive(Debug)]
 pub struct UpdateUserBuilder {
     user_info: supabase_auth::models::UpdatedUser,
     auth: Arc<supabase_auth::models::AuthClient>,
@@ -12,7 +13,7 @@ pub struct UpdateUserBuilder {
 }
 
 /// A listener for changes to a session
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum SessionChangeListener {
     Ignore,
     Sync(std::sync::mpsc::Sender<Session>),

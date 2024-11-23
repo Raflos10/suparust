@@ -123,7 +123,7 @@ use tokio::sync::RwLock;
 pub type Result<Type> = std::result::Result<Type, SupabaseError>;
 
 /// The main Supabase client. This is safely cloneable.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Supabase {
     auth: Arc<supabase_auth::models::AuthClient>,
     session: Arc<RwLock<Option<auth::Session>>>,
