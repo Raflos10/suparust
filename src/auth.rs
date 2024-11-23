@@ -6,7 +6,7 @@ use tokio::sync::RwLock;
 pub const SESSION_REFRESH_GRACE_PERIOD_SECONDS: i64 = 60;
 
 pub struct UpdateUserBuilder {
-    user_info: supabase_auth::models::UpdateUserPayload,
+    user_info: supabase_auth::models::UpdatedUser,
     auth: Arc<supabase_auth::models::AuthClient>,
     session: Arc<RwLock<Option<Session>>>,
 }
@@ -71,7 +71,7 @@ impl Supabase {
                 (auth_state.expires_at as i64) < now_epoch + SESSION_REFRESH_GRACE_PERIOD_SECONDS;
 
             if expired {
-                match self.auth.refresh_session(auth_state.refresh_token).await {
+                match self.auth.refresh_session(&auth_state.refresh_token).await {
                     Ok(session) => {
                         self.set_auth_state(session).await;
                     }
@@ -106,7 +106,7 @@ impl Supabase {
             .map(|session| session.access_token.clone())
             .ok_or(SupabaseError::MissingAuthenticationInformation)?;
 
-        self.auth.logout(scope, token).await?;
+        self.auth.logout(scope, &token).await?;
 
         self.session.write().await.take();
 
@@ -128,7 +128,7 @@ impl Supabase {
         self.refresh_login().await?;
 
         Ok(UpdateUserBuilder {
-            user_info: supabase_auth::models::UpdateUserPayload {
+            user_info: supabase_auth::models::UpdatedUser {
                 email: None,
                 password: None,
                 data: None,
@@ -149,7 +149,7 @@ impl UpdateUserBuilder {
             .as_ref()
             .map(|session| session.access_token.clone())
             .ok_or(SupabaseError::MissingAuthenticationInformation)?;
-        let user = self.auth.update_user(self.user_info, token).await?;
+        let user = self.auth.update_user(self.user_info, &token).await?;
 
         Ok(user)
     }
