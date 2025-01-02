@@ -4,7 +4,6 @@
 use crate::Result;
 use crate::Supabase;
 
-use crate::external::postgrest_rs as postgrest;
 pub use postgrest::Builder;
 
 impl Supabase {

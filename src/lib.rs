@@ -111,12 +111,12 @@
 //! ```
 
 pub mod auth;
-mod external;
 pub mod postgrest;
 pub mod storage;
 #[cfg(test)]
 mod tests;
 
+use ::postgrest::Postgrest;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -128,7 +128,7 @@ pub struct Supabase {
     auth: Arc<supabase_auth::models::AuthClient>,
     session: Arc<RwLock<Option<auth::Session>>>,
     session_listener: auth::SessionChangeListener,
-    postgrest: Arc<RwLock<external::postgrest_rs::Postgrest>>,
+    postgrest: Arc<RwLock<Postgrest>>,
     storage_client: reqwest::Client,
     api_key: String,
     url_base: String,
@@ -207,7 +207,7 @@ impl Supabase {
         session: Option<auth::Session>,
         session_listener: auth::SessionChangeListener,
     ) -> Self {
-        let mut postgrest = external::postgrest_rs::Postgrest::new(format!("{url}/rest/v1"))
+        let mut postgrest = Postgrest::new(format!("{url}/rest/v1"))
             .insert_header("apikey", api_key);
 
         if let Some(session) = &session {
