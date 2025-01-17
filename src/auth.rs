@@ -61,6 +61,18 @@ impl Supabase {
         Ok(session)
     }
 
+    /// Sign up with email and password.
+    pub async fn sign_up_with_email_and_password(&self, email: &str, password: &str) -> Result<Session> {
+        let session = self
+            .auth
+            .sign_up_with_email_and_password(email, password, None)
+            .await?;
+
+        self.set_auth_state(session.clone()).await;
+
+        Ok(session)
+    }
+
     pub(crate) async fn refresh_login(&self) -> crate::Result<()> {
         let auth_state = self.session.read().await.clone();
 
